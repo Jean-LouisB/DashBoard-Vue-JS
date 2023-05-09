@@ -1,26 +1,36 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <nav>
+    <routerLink :to="{ name: 'Accueil' }">HOME</routerLink>
+    <routerLink :to="{ name: 'CalculIMC'}">IMC</routerLink>
+    <routerLink :to="{ name: 'ConvertisseurDevise'}">CHANGE</routerLink>
+    <!-- <routerLink :to="{}">INSCRIPTION</routerLink> -->
+  </nav>
+  <router-view />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterLink } from "vue-router";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    RouterLink,
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+nav{
+  width: 100%;
+  height: 70px;
+  background-color: brown;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+a{
+  text-decoration: none;
+  font-size: 1.5em;
+  color: white;
 }
 </style>
