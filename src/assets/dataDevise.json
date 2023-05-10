@@ -1,0 +1,32 @@
+[
+    {
+        "from":"euro",
+        "to":"usd",
+        "rate":1.10
+    },
+    {
+        "from":"usd",
+        "to":"euro",
+        "rate":0.91
+    },
+    {
+        "from":"euro",
+        "to":"yuan",
+        "rate":7.61
+    },
+    {
+        "from":"yuan",
+        "to":"euro",
+        "rate":0.13
+    },
+    {
+        "from":"usd",
+        "to":"yuan",
+        "rate":6.93
+    },
+    {
+        "from":"yuan",
+        "to":"usd",
+        "rate":0.14
+    }
+]

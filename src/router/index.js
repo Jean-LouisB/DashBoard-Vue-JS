@@ -1,8 +1,8 @@
 import { createWebHistory, createRouter } from "vue-router";
-import AccueilView from "../components/Accueil"
-import NotFound from "../components/NotFound"
-import CalculIMC from "../components/CalculIMC"
-import ConvertisseurDevise from "../components/ConvertisseurDevise"
+import AccueilView from "../Views/Accueil"
+import NotFound from "../Views/NotFound"
+import CalculIMC from "../Views/CalculIMC"
+import ConvertisseurDevise from "../Views/ConvertisseurDevise"
 
 const routes = [
   {
