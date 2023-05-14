@@ -10,7 +10,7 @@ const usersData = [
         id:1,
         userFirstName:"Dania",
         userName:"Benyoussef",
-        password:"cagefos",
+        password:"cegefos",
         email:"dania@cegefos.fr"
     },
 ]
