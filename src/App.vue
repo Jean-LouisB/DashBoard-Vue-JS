@@ -9,6 +9,7 @@
     <a v-show="user" @click="logout()">LOG OUT</a>
     <!-- <routerLink :to="{}">INSCRIPTION</routerLink> -->
   </nav>
+  <p id="connectHello" v-if="user">{{ user.userFirstName }} est connecté(e)</p>
   <router-view v-if="user" class="routerLink"/>
   <LoginComponent v-else :errorMessage="errorMessage" @tryConnect="loginMethod($event)"></LoginComponent>
 </template>
@@ -16,7 +17,7 @@
 <script>
 import { RouterLink } from "vue-router";
 import LoginComponent from "./components/LoginComponent.vue";
-import { login } from "./services/authentification";
+import { login, usersData } from "./services/authentification";
 
 export default {
   name: 'App',
@@ -27,15 +28,11 @@ export default {
   data(){
     return{
       user: null,
-      errorMessage:""
-
+      errorMessage:"",
+      users:[]
     }
   },
   methods:{
-    controleEvent(event){
-      console.log(event.param1);
-      console.log(event.param2);
-    },
     loginMethod(event) {
       this.user = login(event.param1,event.param2);
       this.errorMessage = this.user ? "" : "Authentification échouée."
@@ -43,6 +40,13 @@ export default {
     logout(){
       this.user = null
     }
+  },
+  created(){
+    this.users = usersData
+  },
+  updated(){
+    console.log(this.user);
+
   }
 }
 </script>
@@ -71,6 +75,10 @@ a{
   box-sizing: border-box;
 }
 .routerLink{
-  margin-top: 90px;
+  margin-top: 10px;
+}
+#connectHello{
+  margin-top: 80px;
+  text-align: right;
 }
 </style>

@@ -1,18 +1,23 @@
-const users = [
+const usersData = [
     {
         id:0,
-        identifiant:"fabrice",
-        password:"choualacreme"
+        userFirstName:"fabrice",
+        userName:"Kopf",
+        password:"choualacreme",
+        email:"fkopf@orange.fr"
     },
     {
         id:1,
-        identifiant:"dania",
-        password:"cegefos"
+        userFirstName:"Dania",
+        userName:"Benyoussef",
+        password:"cagefos",
+        email:"dania@cegefos.fr"
     },
 ]
 
-function login (identifiant,password) {
-    return users.find(user=>user.identifiant === identifiant && user.password === password)
+function login (email,password) {
+    return usersData.find(user=>user.email === email && user.password === password)
 }
 
 export { login };
+export { usersData }
