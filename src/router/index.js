@@ -5,6 +5,7 @@ import CalculIMC from "../Views/CalculIMC"
 import ConvertisseurDevise from "../Views/ConvertisseurDevise"
 import BlogListPost from "../Views/BlogListPost"
 import NewPost from "../components/NewPost"
+import LoginComponent from "../components/LoginComponent"
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: "/NewPost",
     name: "NewPost",
     component: NewPost,
+  },
+  {
+    path: "/login",
+    name: "LoginComponent",
+    component: LoginComponent,
   },
   {
     path: "/:catchAll(.*)",
