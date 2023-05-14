@@ -93,6 +93,7 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 90px;
 }
 h1 {
     color: blue;

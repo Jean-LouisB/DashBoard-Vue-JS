@@ -3,6 +3,8 @@ import AccueilView from "../Views/Accueil"
 import NotFound from "../Views/NotFound"
 import CalculIMC from "../Views/CalculIMC"
 import ConvertisseurDevise from "../Views/ConvertisseurDevise"
+import BlogListPost from "../Views/BlogListPost"
+import NewPost from "../components/NewPost"
 
 const routes = [
   {
@@ -19,6 +21,16 @@ const routes = [
     path: "/ConvertisseurDevise",
     name: "ConvertisseurDevise",
     component: ConvertisseurDevise,
+  },
+  {
+    path: "/BlogListPost",
+    name: "BlogListPost",
+    component: BlogListPost,
+  },
+  {
+    path: "/NewPost",
+    name: "NewPost",
+    component: NewPost,
   },
   {
     path: "/:catchAll(.*)",
