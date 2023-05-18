@@ -91,7 +91,7 @@ export default {
                 } catch (error) {
                     console.error(error)
                 }
-                this.$router.replace('/Login')
+                this.$emit('signInok');
             },
         async newUserAuth() {
             const newUserToAuth = {

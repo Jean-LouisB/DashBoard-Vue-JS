@@ -1,7 +1,7 @@
 <template>
   <nav>
 
-    <routerLink :to="{ name: 'LoginComponent' }" v-show="!userData">LOGIN</routerLink>
+    <routerLink :to="{ name: 'LoginComponent' }" v-show="!userData" @click="signIntoggle">LOGIN</routerLink>
     <routerLink :to="{ name: 'Accueil' }" v-show="userData">HOME</routerLink>
     <routerLink :to="{ name: 'CalculIMC' }" v-show="userData">IMC</routerLink>
     <routerLink :to="{ name: 'ConvertisseurDevise' }" v-show="ususerDataer">CHANGE</routerLink>
@@ -12,8 +12,8 @@
     <button v-show="userData" @click="logout()">LOG OUT</button>
   </nav>
   <p id="whoIsConnect" v-if="userData">{{ userData.firstname }} est connecté.</p>
-  <router-view v-if="userData || signin" class="routerLink" :userConnected="userData" />
-  <LoginComponent v-show="!userData" @connected="loginMethod($event)"></LoginComponent>
+  <router-view v-if="userData || signin" class="routerLink" :userConnected="userData" @signInok="signIntoggle"/>
+  <LoginComponent v-show="!signin && !userData" @connected="loginMethod($event)"></LoginComponent>
   <div v-show="!userData" id="btnInscriptionContainer">
     <button id="btnInscription" v-if="!signin" @click="redirectInscription">Inscription</button>
   </div>
@@ -42,6 +42,9 @@ export default {
     }
   },
   methods: {
+    signIntoggle(){
+      this.signin = null
+    },
     loginMethod(user) {
       this.user = user.data;
       this.$router.replace('/');
@@ -50,7 +53,8 @@ export default {
     },
     logout() {
       localStorage.removeItem('idConnected')
-      this.userData = null
+      this.userData = null;
+      this.user = null;
       this.$router.replace('/')
     },
     redirectInscription() {
