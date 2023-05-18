@@ -1,11 +1,11 @@
 <template>
   <nav>
 
-    <routerLink :to="{ name: 'LoginComponent' }" v-show="!userData" @click="signIntoggle">LOGIN</routerLink>
-    <routerLink :to="{ name: 'Accueil' }" v-show="userData">HOME</routerLink>
-    <routerLink :to="{ name: 'CalculIMC' }" v-show="userData">IMC</routerLink>
-    <routerLink :to="{ name: 'ConvertisseurDevise' }" v-show="ususerDataer">CHANGE</routerLink>
-    <routerLink :to="{ name: 'BlogListPost' }" v-show="userData">BLOG</routerLink>
+    <routerLink :to="{ name: 'LoginComponent' }" v-show="!userData" @click="signIntoggle" :class="{ 'active': $route.path === '/LoginComponent' }">LOGIN</routerLink>
+    <routerLink :to="{ name: 'Accueil' }" v-show="userData" :class="{ 'active': $route.path === '/' }">HOME</routerLink>
+    <routerLink :to="{ name: 'CalculIMC' }" v-show="userData" :class="{ 'active': $route.path === '/CalculIMC' }">IMC</routerLink>
+    <routerLink :to="{ name: 'ConvertisseurDevise' }" v-show="userData" :class="{ 'active': $route.path === '/ConvertisseurDevise' }">CHANGE</routerLink>
+    <routerLink :to="{ name: 'BlogListPost' }" v-show="userData" :class="{ 'active': $route.path === '/BlogListPost' }">BLOG</routerLink>
     <!-- <routerLink :to="{ name: 'InscriptionComponent'}">Inscrivez-vous</routerLink> -->
 
     <!-- <routerLink :to="{ name: 'TestConnectServer'}">TEST</routerLink> -->
@@ -22,7 +22,6 @@
 <script>
 import { RouterLink } from "vue-router";
 import LoginComponent from "./components/LoginComponent.vue";
-//import { usersData } from "./services/authentification";
 import axios from 'axios';
 import { SERVER_URL } from './config.js';
 
@@ -146,5 +145,14 @@ nav button {
 
 .routerLink {
   margin-top: 10px;
+}
+
+.active{
+  background-color: rgb(224, 58, 58);
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
