@@ -6,6 +6,10 @@ import ConvertisseurDevise from "../Views/ConvertisseurDevise"
 import BlogListPost from "../Views/BlogListPost"
 import NewPost from "../components/NewPost"
 import LoginComponent from "../components/LoginComponent"
+import TestConnectServer from "../Views/TestConnectServer"
+import InscriptionComponent from "../components/InscriptionComponent"
+
+
 
 const routes = [
   {
@@ -39,9 +43,22 @@ const routes = [
     component: LoginComponent,
   },
   {
+    path: "/TestConnectServer",
+    name: "TestConnectServer",
+    component: TestConnectServer,
+  },
+  {
+    path: "/InscriptionComponent",
+    name: "InscriptionComponent",
+    component: InscriptionComponent,
+  },
+  {
     path: "/:catchAll(.*)",
     component: NotFound,
   },
+
+
+  
 ];
 
 const router = createRouter({

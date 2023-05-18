@@ -1,20 +1,20 @@
 <template>
-
-        <div id="containerForm">
+    <div id="containerForm">
         <div id="formulaireLuimeme">
             <fieldset id="fieldsetIdentite">
                 <legend>Votre identité</legend>
                 <div class="question">
                     <label for="nom" id="labelNom">Votre nom :</label>
-                    <input type="text" id="nom" name="nom" required pattern="^[A-Za-zà-ï_-]+$">
+                    <input type="text" id="nom" name="nom" required pattern="^[A-Za-zà-ï_-]+$" v-model="userName">
                 </div>
                 <div class="question">
                     <label for="prenom" id="labelPrenom">Votre prénom :</label>
-                    <input type="text" id="prenom" name="prenom" required  pattern="^[A-Za-zà-ï_-]+$">
+                    <input type="text" id="prenom" name="prenom" required pattern="^[A-Za-zà-ï_-]+$"
+                        v-model="userFirstName">
                 </div>
                 <div class="question">
                     <label for="dateNaissance" id="labelDateNaissance">Date de naissance :</label>
-                    <input type="date" id="dateNaissance" name="dateNaissance" required>
+                    <input type="date" id="dateNaissance" name="dateNaissance" required v-model="birthDate">
                 </div>
             </fieldset>
             <fieldset id="fieldUser">
@@ -23,11 +23,12 @@
                 </legend>
                 <div class="question">
                     <label for="email" id="labelMail">Votre e-mail :</label>
-                    <input type="email" id="email" name="email" required  pattern="^[a-z0-9._-]+@[a-z0-9._-]+\.[a-z0-9._-]{2,}$">
+                    <input type="email" id="email" name="email" required
+                        pattern="^[a-z0-9._-]+@[a-z0-9._-]+\.[a-z0-9._-]{2,}$" v-model="email">
                 </div>
                 <div class="question">
                     <label for="password" id="labelPassword">Votre mot de passe :</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" required v-model="userPassword">
                 </div>
                 <div class="question">
                     <label for="passwordConfirm" id="labelPasswordConfirm">Confirmer votre mot de passe :</label>
@@ -36,95 +37,141 @@
 
             </fieldset>
             <fieldset id="fieldAdresse">
-                 <legend>Votre adresse</legend>
+                <legend>Votre adresse</legend>
                 <div class="question" id="inputAdresse">
                     <label for="adresse" id="labelAdresse">Votre adresse :</label>
-                    <input type="text" id="adresse" name="adresse" required >
+                    <input type="text" id="adresse" name="adresse" required v-model="adress">
                 </div>
                 <div class="question">
                     <label for="ville" id="labelVille">Ville :</label>
-                    <input type="text" id="ville" name="ville" class="formAutocomplete" required>
+                    <input type="text" id="ville" name="ville" class="formAutocomplete" required v-model="city">
                 </div>
                 <div class="question">
                     <label for="codePostal" id="labelCodePostal">Code postal :</label>
-                    <input type="text" id="codePostal" name="codePostal" class="formAutocomplete" required pattern="^[0-9]{5}$">
+                    <input type="text" id="codePostal" name="codePostal" class="formAutocomplete" required
+                        pattern="^[0-9]{5}$" v-model="cp">
                 </div>
-            
-                
+
+
             </fieldset>
-            <button id="inscriptionBtn" @click="alerteToggle()">INSCRIPTION</button>
-            
+            <button id="inscriptionBtn" @click="addNewUser()">INSCRIPTION</button>
+            <p v-if="newId">L'utilisateur {{ newId }} est bien créé</p>
         </div>
-<div v-show="alerte" id="messageAlerte">
-    <p class="redNotice">La persistance des données n'est pas activée. <br>L'incription n'est donc pas activée.</p>
-    <div class="sortirX" @click="alerteToggle()">X</div>
-</div>
-
-        </div>
-
-
+    </div>
 </template>
 <script>
-
+import axios from 'axios';
+import { SERVER_URL } from '../config.js';
 export default {
     name: "InscriptionComponent",
-    
+
     data() {
         return {
-            userName:"",        
-            userFirstName:"",
-            userPassword:"",
-            alerte:false
+            userName: "",
+            userFirstName: "",
+            userPassword: "",
+            email: "",
+            birthDate: "",
+            adress: "",
+            city: "",
+            cp: "",
+            newId:null,
+
         }
     },
-    methods:{
-        alerteToggle(){
-            this.alerte = !this.alerte
-        }
+    methods: {
+        async addNewUser() {
+            const idCreated = await this.newUserAuth()
+                const newUser = { ...this.newUser, newIdAuth: idCreated };
+                //console.log(newUser);
+                try {
+                    const response = await axios.post(`${SERVER_URL}newUser`, newUser);
+                    const newUserId = response.data;
+                    this.newId = newUserId;//sert juste de trace 
+                } catch (error) {
+                    console.error(error)
+                }
+                this.$router.replace('/Login')
+            },
+        async newUserAuth() {
+            const newUserToAuth = {
+                email: this.email,
+                password: this.userPassword
+            };
+            try {
+                const response = await axios.post(`${SERVER_URL}newUserAuth`, newUserToAuth);
+                const newUserId = response.data;
+                return newUserId;
+            } catch (error) {
+                console.log("Une erreur est survenue.");
+            }
+        },
+    },
+
+    computed: {
+        newUser() {
+            return {
+                name: this.userName,
+                firstname: this.userFirstName,
+                birthDate: this.birthDate,
+                email: this.email,
+                adress: this.adress,
+                city: this.city,
+                cp: this.cp,
+                createdAt: new Date()
+            }
+        },
+
     }
 }
 
 </script>
 <style scoped>
-#containerForm{
+#containerForm {
+    margin-top: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 90%;
 }
 
-#formulaireLuimeme{
+#formulaireLuimeme {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 
 }
-fieldset{
-    width:100%;
+
+fieldset {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
 }
-input{
+
+input {
     margin-bottom: 10px;
     font-size: 1.2em;
 }
-input:focus{
+
+input:focus {
     background-color: rgba(66, 111, 66, 0.534);
     color: white;
 }
-.invalidInput{
+
+.invalidInput {
     background-color: brown;
 }
-.invalidLabel{
+
+.invalidLabel {
     color: red;
 }
 
-#validationBdd{
-    
+#validationBdd {
+
     position: absolute;
     top: 0;
     background-color: rgba(255, 255, 255, 0.90);
@@ -136,31 +183,34 @@ input:focus{
     align-items: center;
     font-size: 2em;
 }
-#validationBdd select{
+
+#validationBdd select {
     max-width: 300px;
-    width:80%;
+    width: 80%;
     height: 2em;
     margin-top: 10px;
     margin-bottom: 20px;
 }
-#validationBdd button{
+
+#validationBdd button {
     background-color: white;
-    color: var( --vert2);
+    color: var(--vert2);
     box-shadow: 2px 2px 2px var(--vert2);
     border-radius: 5px;
     max-width: 300px;
-    width:80%;
+    width: 80%;
     height: 2.5em;
     margin-top: 10px;
     margin-bottom: 20px;
 }
-.question{
+
+.question {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-#messageAlerte{
+#messageAlerte {
     position: absolute;
     top: 0;
     left: 0;
@@ -173,12 +223,14 @@ input:focus{
     justify-content: center;
 
 }
-.redNotice{
+
+.redNotice {
     text-align: center;
     color: red;
     font-size: 2em;
 }
-.sortirX{
+
+.sortirX {
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.567);
     color: white;
@@ -190,39 +242,41 @@ input:focus{
 }
 
 
-@media screen and (min-width:800px){
-    #formulaireLuimeme{
+@media screen and (min-width:800px) {
+    #formulaireLuimeme {
         width: 90%;
         display: flex;
 
     }
 
 
-    #fieldAdresse{
+    #fieldAdresse {
         grid-column: 1;
     }
-    #fildAutres{
+
+    #fildAutres {
         grid-column: 2;
     }
-    form>h1{
+
+    form>h1 {
         grid-column: 1 / span 2;
 
     }
 
-    #inscriptionBtn{
+    #inscriptionBtn {
         grid-column: 1 / span 2;
         width: 100%;
     }
-    .question{
+
+    .question {
         width: 100%;
 
     }
 
-    form>h1{
+    form>h1 {
         text-align: center;
 
     }
 
 }
-
 </style>

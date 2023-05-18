@@ -5,37 +5,46 @@
             <h1>Connectez-vous</h1>
             <p class="redNotice" v-if="errorMessage">{{ errorMessage }}</p>
             <input type="text" id="identifiant" name="identifiant" placeholder="Votre identifiant (email)"
-                v-model="identifiantSaisi">
-            <input type="password" id="password" name="password" placeholder="Votre mot de passe" v-model="passwordSaisi">
-            <button @click="$emit('tryConnect', { param1: identifiantSaisi, param2: passwordSaisi })">VALIDER</button>
+                v-model="email">
+            <input type="password" id="password" name="password" placeholder="Votre mot de passe" v-model="password">
+            <button @click="login()">VALIDER</button>
         </div>
-        <p id="btnP" @click="demandeInscriptionToggle()">Inscrivez-vous</p>
-        <InscriptionComponent v-show="demandeInscription"></InscriptionComponent>
-        <p id="btnP" v-show="demandeInscription" @click="demandeInscriptionToggle()">retour</p>
-
+        
     </section>
+
 </template>
 <script>
-import InscriptionComponent from "./InscriptionComponent"
+import axios from 'axios';
+import { SERVER_URL } from '../config.js';
+
 export default {
-    components:{
-          InscriptionComponent
-    },
-  
     name: "LoginComponent",
-    props: ['errorMessage'],
     data() {
         return {
-            identifiantSaisi: "",
-            passwordSaisi: "",
-            demandeInscription:false
+            email:"",
+            password:"",
+            errorMessage:null
         }
     },
     methods:{
         demandeInscriptionToggle(){
             this.demandeInscription = !this.demandeInscription
+        },
+        async login(){
+            this.errorMessage = null;
+            const testUserAuth = {
+                email:this.email,
+                password: this.password
+            }
+            try {
+                const response = await axios.post(`${SERVER_URL}login`, testUserAuth);
+                const userConnected = response
+                this.$emit('connected',userConnected)
+            } catch (error) {
+                       this.errorMessage = "Erreur d'identifiants, recommencez"
+            }
         }
-    },
+        }
 }
 
 </script>

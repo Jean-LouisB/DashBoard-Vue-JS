@@ -1,58 +1,96 @@
 <template>
   <nav>
 
-    <routerLink :to="{ name: 'LoginComponent' }" v-show="!user">LOGIN</routerLink>
-    <routerLink :to="{ name: 'Accueil' }" v-show="user">HOME</routerLink>
-    <routerLink :to="{ name: 'CalculIMC'}" v-show="user">IMC</routerLink>
-    <routerLink :to="{ name: 'ConvertisseurDevise'}" v-show="user">CHANGE</routerLink>
-    <routerLink :to="{ name: 'BlogListPost'}" v-show="user">BLOG</routerLink>
-    <a v-show="user" @click="logout()">LOG OUT</a>
-    <!-- <routerLink :to="{}">INSCRIPTION</routerLink> -->
+    <routerLink :to="{ name: 'LoginComponent' }" v-show="!userData">LOGIN</routerLink>
+    <routerLink :to="{ name: 'Accueil' }" v-show="userData">HOME</routerLink>
+    <routerLink :to="{ name: 'CalculIMC' }" v-show="userData">IMC</routerLink>
+    <routerLink :to="{ name: 'ConvertisseurDevise' }" v-show="ususerDataer">CHANGE</routerLink>
+    <routerLink :to="{ name: 'BlogListPost' }" v-show="userData">BLOG</routerLink>
+    <!-- <routerLink :to="{ name: 'InscriptionComponent'}">Inscrivez-vous</routerLink> -->
+
+    <!-- <routerLink :to="{ name: 'TestConnectServer'}">TEST</routerLink> -->
+    <button v-show="userData" @click="logout()">LOG OUT</button>
   </nav>
-  <p id="connectHello" v-if="user">{{ user.userFirstName }} est connecté(e)</p>
-  <router-view v-if="user" class="routerLink"/>
-  <LoginComponent v-else :errorMessage="errorMessage" @tryConnect="loginMethod($event)"></LoginComponent>
+  <p id="whoIsConnect" v-if="userData">{{ userData.firstname }} est connecté.</p>
+  <router-view v-if="userData || signin" class="routerLink" :userConnected="userData" />
+  <LoginComponent v-show="!userData" @connected="loginMethod($event)"></LoginComponent>
+  <div v-show="!userData" id="btnInscriptionContainer">
+    <button id="btnInscription" v-if="!signin" @click="redirectInscription">Inscription</button>
+  </div>
 </template>
 
 <script>
 import { RouterLink } from "vue-router";
 import LoginComponent from "./components/LoginComponent.vue";
-import { login, usersData } from "./services/authentification";
+//import { usersData } from "./services/authentification";
+import axios from 'axios';
+import { SERVER_URL } from './config.js';
+
 
 export default {
   name: 'App',
   components: {
     RouterLink,
-    LoginComponent
-},
-  data(){
-    return{
-      user: null,
-      errorMessage:"",
-      users:[]
-    }
-  },
-  methods:{
-    loginMethod(event) {
-      this.user = login(event.param1,event.param2);
-      this.errorMessage = this.user ? "" : "Authentification échouée."
-    },
-    logout(){
-      this.user = null
-    }
-  },
-  created(){
-    this.users = usersData
-  },
-  updated(){
-    console.log(this.user);
+    LoginComponent,
 
+  },
+  data() {
+    return {
+      user: null,
+      signin: null,
+      userData: null
+    }
+  },
+  methods: {
+    loginMethod(user) {
+      this.user = user.data;
+      this.$router.replace('/');
+      this.userIsConnect()
+
+    },
+    logout() {
+      localStorage.removeItem('idConnected')
+      this.userData = null
+      this.$router.replace('/')
+    },
+    redirectInscription() {
+      this.signin = true;
+      this.$router.replace('/InscriptionComponent');
+    },
+    async userIsConnect() {
+      if (this.user) {
+        const reqBody = {
+          params: {
+            numId: this.user
+          }
+        }
+        const response = await axios.get(`${SERVER_URL}userProfile`, reqBody);
+        const profile = response.data;
+        this.userData = profile[0].userDetail
+        localStorage.setItem('idConnected', profile[0].userDetail.newIdAuth)
+      }
+    }
+  },
+  async mounted() {
+    if (localStorage.getItem('idConnected')) {
+      const idconnected = localStorage.getItem('idConnected')
+      const reqBody = {
+        params: {
+          numId: idconnected
+        }
+      }
+      const response = await axios.get(`${SERVER_URL}userProfile`, reqBody);
+      const profile = response.data;
+      this.userData = profile[0].userDetail
+      this.$router.replace('/');
+
+    }
   }
 }
 </script>
 
 <style scoped>
-nav{
+nav {
   width: 100%;
   height: 70px;
   background-color: brown;
@@ -60,25 +98,49 @@ nav{
   justify-content: space-around;
   align-items: center;
   position: fixed;
-  top:0;
-  left:0;
-  
+  top: 0;
+  left: 0;
+
 }
-a{
+
+#whoIsConnect {
+  margin-top: 90px;
+  text-align: right;
+}
+
+a {
   text-decoration: none;
   font-size: 1.3em;
   color: white;
 }
+
+nav button {
+  text-decoration: none;
+  font-size: 1.3em;
+  color: white;
+  background-color: transparent;
+  border: none;
+}
+
+#btnInscription {
+  width: 50%;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  padding: 5px;
+}
+#btnInscriptionContainer{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 </style>
+
 <style>
-*{
+* {
   box-sizing: border-box;
 }
-.routerLink{
+
+.routerLink {
   margin-top: 10px;
-}
-#connectHello{
-  margin-top: 80px;
-  text-align: right;
 }
 </style>
